@@ -10,19 +10,21 @@ namespace SpacePark
     {
         static void Main(string[] args)
         {
-        //    var t = Starship.GetStarships("22");
-        //    Console.WriteLine(t.Result);
             Console.WriteLine("What is your name?");
             string name = Console.ReadLine();
             var r = Person.GetPerson();
             var ship = Starship.GetStarships();
 
+            Console.WriteLine(ship.Result.Count);
             Console.WriteLine(r.Result.Count);
 
             if (r.Result.Any(p => p.Name == name))
             {
                 Console.WriteLine($"Welcome {name}. What ship will you be parking today?");
-                //ListShips();
+                foreach (var s in ship.Result)
+                {
+                    Console.WriteLine("Name: " + s.Name + " Length: " + s.Length);
+                }
             }
             else
             {

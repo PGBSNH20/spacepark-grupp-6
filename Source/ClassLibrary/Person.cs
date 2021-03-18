@@ -9,7 +9,6 @@ namespace ClassLibrary
     {
         public string Count { get; set; }
         public List<Results> Results { get; set; }
-
         public static async Task<List<Results>> GetPerson()
         {
             var list = new List<string>();
@@ -41,19 +40,4 @@ namespace ClassLibrary
         public string Name { get; set; }
         public string Height { get; set; }
     }
-    public class Starship
-    {
-        public string Name { get; set; }
-        public string Length { get; set; }
-        public List<Starship> Starships {get; set;}
-
-        public static async Task<List<Starship>> GetStarships()
-        {
-            var client = new RestClient("https://swapi.dev/api/");
-            var request = new RestRequest("starships/", DataFormat.Json);
-            var response = await client.GetAsync<Starship>(request);
-            return response;
-        }
-    }
-
 }
