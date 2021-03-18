@@ -21,11 +21,20 @@ namespace SpacePark
                 {
                     "Park Ship",
                     "Leave SpacePark",
-                    "Exit"
+                    "Exit Menu"
                 });
                 switch (selectedOption)
                 {
                     case 0:
+                        var context = new SpaceContext();
+                        Console.WriteLine("Loading...");
+                        if (context.Parkings.All(i => i.Occupied))
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Parking is full. Go away. Press ENTER.");
+                            Console.ReadKey();
+                            break;
+                        }
                         Console.Clear();
                         var ship = Starship.SelectShip();
                         Parking.Park(ship);
