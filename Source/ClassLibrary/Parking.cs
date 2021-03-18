@@ -32,47 +32,71 @@ namespace ClassLibrary
             switch (selectedOption)
             {
                 case 0:
-                    if (ship.Length > parkings.Result[0].MaxLength)
+                    if (CheckSize(parkings, 0, ship))
                     {
-                        Console.WriteLine("Too big");
+                        Console.WriteLine("Too big.");
                         Console.ReadKey();
                         break;
                     }
                     else
                     {
-                        Console.WriteLine("Parked");
-                        var park = context.Parkings.First(p => p.Id == parkings.Result[0].Id);
-                        park.Occupied = true;
-                        park.User = ship.Name;
-                        context.SaveChanges();
-                        Console.ReadKey();
+                        if (CanPark(parkings, 0))
+                        {
+                            Console.WriteLine("Occupied");
+                            break;
+                        }
+                        Park(parkings, 0, ship);
                         break;
                     }
                 case 1:
-                    if (parkings.Result[0].MaxLength > ship.Length)
+                    if (CheckSize(parkings, 1, ship))
                     {
-                        Console.WriteLine("Too big");
+                        Console.WriteLine("Too big.");
                         Console.ReadKey();
                         break;
                     }
                     else
                     {
-                        Console.WriteLine("Parked");
-                        var park = context.Parkings.First(p => p.Id == parkings.Result[1].Id);
-                        park.Occupied = true;
-                        park.User = ship.Name;
-                        context.SaveChanges();
-                        Console.ReadKey();
+                        if (CanPark(parkings, 1))
+                        {
+                            Console.WriteLine("Occupied");
+                            break;
+                        }
+                        Park(parkings, 1, ship);
                         break;
                     }
 
             }
         }
+
+        public static bool CheckSize(Task<List<Parking>> parkings, int index, ShipResult ship)
+        {
+            return ship.Length <= parkings.Result[0].MaxLength;
+        }
+
         public static async Task<List<Parking>> ParkingLots()
         {
             await using var context = new SpaceContext();
             var parkings = context.Parkings.OrderBy(i => i.Id).ToList();
             return parkings;
+        }
+
+        public static bool CanPark(Task<List<Parking>> parkings, int index)
+        {
+            using var context = new SpaceContext();
+            var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
+            return park.Occupied;
+        }
+
+        public static void Park(Task<List<Parking>> parkings, int index, ShipResult ship)
+        {
+            using var context = new SpaceContext();
+            Console.WriteLine("Parked");
+            var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
+            park.Occupied = true;
+            park.User = ship.Name;
+            context.SaveChanges();
+            Console.ReadKey();
         }
     }
 
