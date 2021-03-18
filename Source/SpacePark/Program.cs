@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ClassLibrary;
 using RestSharp;
 
@@ -10,29 +11,36 @@ namespace SpacePark
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("What is your name?");
-            string name = Console.ReadLine();
-            var r = Person.GetPerson();
-            var ship = Starship.GetStarships();
-
-            Console.WriteLine("Loading...");
-            
-
-            if (r.Result.Any(p => p.Name == name))
+            Console.Clear();
+            var running = true;
+            while (running)
             {
                 Console.Clear();
-                Console.WriteLine($"Welcome {name}. What ship will you be parking today?\n");
-
-                foreach (var s in ship.Result)
+                Console.WriteLine("");
+                var selectedOption = Menu.ShowMenu("SpacePark Menu", new[]
                 {
-                    Console.WriteLine("Name: " + s.Name + " Length: " + s.Length);
+                    "Park Ship",
+                    "Leave SpacePark",
+                    "Exit"
+                });
+                switch (selectedOption)
+                {
+                    case 0:
+                        Console.Clear();
+                        var ship = Starship.SelectShip();
+                        Parking.Park(ship);
+                        break;
+                    case 1:
+                        Console.WriteLine("Temp");
+                        break;
+                    case 2:
+                        running = false;
+                        break;
                 }
             }
-            else
-            {
-                Console.WriteLine("Not Allowed");
-            }
-
         }
+        
+
+        
     }
 }
