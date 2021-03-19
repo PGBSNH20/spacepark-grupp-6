@@ -35,10 +35,19 @@ namespace ClassLibrary
             Console.WriteLine("Enter name: ");
             var name = Console.ReadLine();
             var payments = context.Payments.Where(p => p.User == name).ToList();
-            foreach (var r in payments)
+            if (!payments.Any())
             {
-                Console.WriteLine($"Payment by {r.User}. Amount {r.Amount} credits.");
+                Console.WriteLine("No receipts found.");
             }
+            else
+            {
+                foreach (var r in payments)
+                {
+
+                    Console.WriteLine($"Payment by {r.User}. Amount {r.Amount} credits.");
+                }
+            }
+            
 
             Console.ReadKey();
         }
