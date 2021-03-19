@@ -50,6 +50,20 @@ namespace ClassLibrary
                         return ship.Result[1];
                     case 2:
                         return ship.Result[2];
+                    case 3:
+                        return ship.Result[3];
+                    case 4:
+                        return ship.Result[4];
+                    case 5:
+                        return ship.Result[5];
+                    case 6:
+                        return ship.Result[6];
+                    case 7:
+                        return ship.Result[7];
+                    case 8:
+                        return ship.Result[8];
+                    case 9:
+                        return ship.Result[9];
                 }
             }
             else

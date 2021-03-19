@@ -21,6 +21,7 @@ namespace SpacePark
                 {
                     "Park Ship",
                     "Leave SpacePark",
+                    "Show receipts",
                     "Exit Menu"
                 });
                 switch (selectedOption)
@@ -40,9 +41,12 @@ namespace SpacePark
                         Parking.Park(ship);
                         break;
                     case 1:
-                        Console.WriteLine("Temp");
+                        Parking.LeavePark();
                         break;
                     case 2:
+                        Payment.Receipts();
+                        break;
+                    case 3:
                         running = false;
                         break;
                 }

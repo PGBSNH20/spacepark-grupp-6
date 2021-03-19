@@ -16,7 +16,6 @@ namespace ClassLibrary
 
         public static void Park(ShipResult ship)
         {
-            var context = new SpaceContext();
             Console.Clear();
             Console.WriteLine("Loading...");
             var parkings = ParkingLots();
@@ -32,46 +31,26 @@ namespace ClassLibrary
             switch (selectedOption)
             {
                 case 0:
-                    if (CheckSize(parkings, 0, ship))
-                    {
-                        Console.WriteLine("Too big.");
-                        Console.ReadKey();
-                        break;
-                    }
-                    else
-                    {
-                        if (CanPark(parkings, 0))
-                        {
-                            Console.WriteLine("Occupied");
-                            break;
-                        }
-                        Park(parkings, 0, ship);
-                        break;
-                    }
+                    Finish(parkings, 0, ship);
+                    break;
                 case 1:
-                    if (CheckSize(parkings, 1, ship))
-                    {
-                        Console.WriteLine("Too big.");
-                        Console.ReadKey();
-                        break;
-                    }
-                    else
-                    {
-                        if (CanPark(parkings, 1))
-                        {
-                            Console.WriteLine("Occupied");
-                            break;
-                        }
-                        Park(parkings, 1, ship);
-                        break;
-                    }
-
+                    Finish(parkings, 1, ship);
+                    break;
+                case 2:
+                    Finish(parkings, 2, ship);
+                    break;
+                case 3:
+                    Finish(parkings, 3, ship);
+                    break;
+                case 4:
+                    Finish(parkings, 4, ship);
+                    break;
             }
         }
 
-        public static bool CheckSize(Task<List<Parking>> parkings, int index, ShipResult ship)
+        public static bool SizeTooBig(Task<List<Parking>> parkings, int index, ShipResult ship)
         {
-            return ship.Length <= parkings.Result[0].MaxLength;
+            return ship.Length > parkings.Result[index].MaxLength;
         }
 
         public static async Task<List<Parking>> ParkingLots()
@@ -80,8 +59,7 @@ namespace ClassLibrary
             var parkings = context.Parkings.OrderBy(i => i.Id).ToList();
             return parkings;
         }
-
-        public static bool CanPark(Task<List<Parking>> parkings, int index)
+        public static bool ParkIsOccupied(Task<List<Parking>> parkings, int index)
         {
             using var context = new SpaceContext();
             var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
@@ -91,14 +69,111 @@ namespace ClassLibrary
         public static void Park(Task<List<Parking>> parkings, int index, ShipResult ship)
         {
             using var context = new SpaceContext();
-            Console.WriteLine("Parked");
+            Console.WriteLine("Parking..");
             var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
             park.Occupied = true;
             park.User = ship.Name;
             context.SaveChanges();
+            Console.Clear();
+            Console.WriteLine("Parked");
+            Console.ReadKey();
+        }
+        public static void Leave(Task<List<Parking>> parkings, int index, ShipResult ship)
+        {
+            using var context = new SpaceContext();
+            Console.WriteLine("Parking..");
+            var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
+            park.Occupied = true;
+            park.User = ship.Name;
+            context.SaveChanges();
+            Console.Clear();
+            Console.WriteLine("Parked");
+            Console.ReadKey();
+        }
+
+        public static void Finish(Task<List<Parking>> parkings, int index, ShipResult ship)
+        {
+            if (SizeTooBig(parkings, index, ship))
+            {
+                Console.WriteLine("Too big.");
+                Console.ReadKey();
+            }
+            else
+            {
+                if (ParkIsOccupied(parkings, index))
+                {
+                    Console.WriteLine("Occupied");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Park(parkings, index, ship);
+                }
+            }
+        }
+
+        public static ShipResult LeavePark()
+        {
+            Console.WriteLine("For security reasons, provide your name before selecting your ship.");
+            string name = Console.ReadLine();
+            var r = Person.GetPerson();
+            Console.WriteLine("Loading...");
+            if (r.Result.Any(p => p.Name == name))
+            {
+                var parkings = ParkingLots();
+                Console.Clear();
+                var selectedOption = Menu.ShowMenu($"Welcome {name}. What ship will you be leaving with today?\n", new[]
+                {
+                    $"Parking Spot {parkings.Result[0].Id}. Is occupied: {parkings.Result[0].Occupied}. Occupied by {parkings.Result[0].User}",
+                    $"Parking Spot {parkings.Result[1].Id}. Is occupied: {parkings.Result[1].Occupied}. Occupied by {parkings.Result[1].User}",
+                    $"Parking Spot {parkings.Result[2].Id}. Is occupied: {parkings.Result[2].Occupied}. Occupied by {parkings.Result[2].User}",
+                    $"Parking Spot {parkings.Result[3].Id}. Is occupied: {parkings.Result[3].Occupied}. Occupied by {parkings.Result[3].User}",
+                    $"Parking Spot {parkings.Result[4].Id}. Is occupied: {parkings.Result[4].Occupied}. Occupied by {parkings.Result[4].User}",
+                });
+                switch (selectedOption)
+                {
+                    case 0:
+                        Payment.Pay(parkings, 0, name);
+                        Leave(parkings, 0);
+                        break;
+                    case 1:
+                        Payment.Pay(parkings, 1, name);
+                        Leave(parkings, 1);
+                        break;
+                    case 2:
+                        Payment.Pay(parkings, 2, name);
+                        Leave(parkings, 2);
+                        break;
+                    case 3:
+                        Payment.Pay(parkings, 3, name);
+                        Leave(parkings, 3);
+                        break;
+                    case 4:
+                        Payment.Pay(parkings, 4, name);
+                        Leave(parkings, 4);
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not Allowed");
+                return null;
+            }
+
+            return null;
+        }
+        public static void Leave(Task<List<Parking>> parkings, int index)
+        {
+            using var context = new SpaceContext();
+            Console.WriteLine("Leaving...");
+            var ship = context.Parkings.First(s => s.Id == parkings.Result[index].Id);
+            ship.Occupied = false;
+            ship.User = null;
+            context.SaveChanges();
+            Console.Clear();
+            Console.WriteLine("Left.");
             Console.ReadKey();
         }
     }
-
 
 }
