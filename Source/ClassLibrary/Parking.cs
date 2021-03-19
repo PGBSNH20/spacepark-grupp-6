@@ -114,6 +114,7 @@ namespace ClassLibrary
 
         public static ShipResult LeavePark()
         {
+            Console.Clear();
             Console.WriteLine("For security reasons, provide your name before selecting your ship.");
             string name = Console.ReadLine();
             var r = Person.GetPerson();
@@ -157,6 +158,7 @@ namespace ClassLibrary
             else
             {
                 Console.WriteLine("Not Allowed");
+                Console.ReadKey();
                 return null;
             }
 

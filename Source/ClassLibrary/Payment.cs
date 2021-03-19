@@ -43,7 +43,6 @@ namespace ClassLibrary
             {
                 foreach (var r in payments)
                 {
-
                     Console.WriteLine($"Payment by {r.User}. Amount {r.Amount} credits.");
                 }
             }
