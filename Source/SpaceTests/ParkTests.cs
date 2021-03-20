@@ -3,7 +3,7 @@ using Xunit;
 
 namespace SpaceTests
 {
-    public class UnitTest1
+    public class ParkTests
     {
         [Fact]
         public void Test1()

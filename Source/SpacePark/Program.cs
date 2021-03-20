@@ -7,10 +7,13 @@ using RestSharp;
 
 namespace SpacePark
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
+            IParking parking = new Parking();
+            IPayment payment = new Payment();
+            IStarship starship = new Starship();
             Console.Clear();
             var running = true;
             while (running)
@@ -27,30 +30,32 @@ namespace SpacePark
                 {
                     "Park Ship",
                     "Leave SpacePark",
-                    "Show receipts",
+                    "Show Receipts",
                     "Exit Menu"
                 });
                 switch (selectedOption)
                 {
                     case 0:
-                        var context = new SpaceContext();
-                        Console.WriteLine("Loading...");
-                        if (context.Parkings.All(i => i.Occupied))
                         {
+                            using var context = new SpaceContext();
+                            Console.WriteLine("Loading...");
+                            if (context.Parkings.All(i => i.Occupied))
+                            {
+                                Console.Clear();
+                                Console.WriteLine("Parking is full. Go away. Press ENTER.");
+                                Console.ReadKey();
+                                break;
+                            }
                             Console.Clear();
-                            Console.WriteLine("Parking is full. Go away. Press ENTER.");
-                            Console.ReadKey();
+                            var ship = starship.SelectShip();
+                            parking.Park(ship);
                             break;
                         }
-                        Console.Clear();
-                        var ship = Starship.SelectShip();
-                        Parking.Park(ship);
-                        break;
                     case 1:
-                        Parking.LeavePark();
+                        parking.LeavePark();
                         break;
                     case 2:
-                        Payment.Receipts();
+                        payment.Receipts();
                         break;
                     case 3:
                         running = false;
@@ -58,8 +63,8 @@ namespace SpacePark
                 }
             }
         }
-        
 
-        
+
+
     }
 }

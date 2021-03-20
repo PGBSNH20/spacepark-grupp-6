@@ -4,14 +4,16 @@ using ClassLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClassLibrary.Migrations
 {
     [DbContext(typeof(SpaceContext))]
-    partial class SpaceContextModelSnapshot : ModelSnapshot
+    [Migration("20210320100040_PaymentDate_property")]
+    partial class PaymentDate_property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +64,56 @@ namespace ClassLibrary.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("ClassLibrary.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Count")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Person");
+                });
+
+            modelBuilder.Entity("ClassLibrary.Results", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Height")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("Results");
+                });
+
+            modelBuilder.Entity("ClassLibrary.Results", b =>
+                {
+                    b.HasOne("ClassLibrary.Person", null)
+                        .WithMany("Results")
+                        .HasForeignKey("PersonId");
+                });
+
+            modelBuilder.Entity("ClassLibrary.Person", b =>
+                {
+                    b.Navigation("Results");
                 });
 #pragma warning restore 612, 618
         }

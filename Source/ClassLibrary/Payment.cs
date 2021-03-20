@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
-    public class Payment
+    public class Payment : IPayment
     {
         public int Id { get; set; }
         public int Amount { get; set; }
         public string User { get; set; }
+        public DateTime PayDate { get; set; }
 
-        public static void Pay(Task<List<Parking>> parkings, int index, string name)
+        public void Pay(Task<List<Parking>> parkings, int index, string name)
         {
             Console.Clear();
             using var context = new SpaceContext();
@@ -20,7 +21,8 @@ namespace ClassLibrary
             var pay = new Payment()
             {
                 Amount = parkings.Result[index].Fee,
-                User = name
+                User = name,
+                PayDate = DateTime.Now
             };
             context.Add(pay);
             context.SaveChanges();
@@ -28,7 +30,7 @@ namespace ClassLibrary
             Console.ReadKey();
         }
 
-        public static void Receipts()
+        public void Receipts()
         {
             using var context = new SpaceContext();
             Console.Clear();
@@ -43,11 +45,9 @@ namespace ClassLibrary
             {
                 foreach (var r in payments)
                 {
-                    Console.WriteLine($"Payment by {r.User}. Amount {r.Amount} credits.");
+                    Console.WriteLine($"Payment By: {r.User}. Amount: {r.Amount} credits. Payment Date: {r.PayDate}");
                 }
             }
-            
-
             Console.ReadKey();
         }
     }

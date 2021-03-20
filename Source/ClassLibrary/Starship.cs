@@ -6,24 +6,23 @@ using RestSharp;
 
 namespace ClassLibrary
 {
-    public class Starship
+    public class Starship : IStarship
     {
-        public string Name { get; set; }
-        public decimal Length { get; set; }
         public List<ShipResult> Results { get; set; }
 
-        public static async Task<List<ShipResult>> GetStarships()
+        public async Task<List<ShipResult>> GetStarships()
         {
             var client = new RestClient("https://swapi.dev/api/");
             var request = new RestRequest("starships/", DataFormat.Json);
             var response = await client.GetAsync<Starship>(request);
             return response.Results;
         }
-        public static ShipResult SelectShip()
+        public ShipResult SelectShip()
         {
+            IPerson person = new Person();
             Console.WriteLine("What is your name?");
             string name = Console.ReadLine();
-            var r = Person.GetPerson();
+            var r = person.GetPerson();
             var ship = GetStarships();
             Console.WriteLine("Loading...");
             if (r.Result.Any(p => p.Name == name))
@@ -75,6 +74,7 @@ namespace ClassLibrary
             return null;
         }
     }
+
     public class ShipResult
     {
         public string Name { get; set; }
