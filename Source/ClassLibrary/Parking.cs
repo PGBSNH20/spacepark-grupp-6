@@ -48,7 +48,7 @@ namespace ClassLibrary
             }
         }
 
-        public bool SizeTooBig(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private bool SizeTooBig(Task<List<Parking>> parkings, int index, ShipResult ship)
         {
             return ship.Length > parkings.Result[index].MaxLength;
         }
@@ -59,14 +59,14 @@ namespace ClassLibrary
             var parkings = context.Parkings.OrderBy(i => i.Id).ToList();
             return parkings;
         }
-        public bool ParkIsOccupied(Task<List<Parking>> parkings, int index)
+        private bool ParkIsOccupied(Task<List<Parking>> parkings, int index)
         {
             using var context = new SpaceContext();
             var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
             return park.Occupied;
         }
 
-        public void Park(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private void Park(Task<List<Parking>> parkings, int index, ShipResult ship)
         {
             Console.Clear();
             using var context = new SpaceContext();
@@ -79,7 +79,7 @@ namespace ClassLibrary
             Console.ReadKey();
         }
 
-        public void Finish(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private void Finish(Task<List<Parking>> parkings, int index, ShipResult ship)
         {
             if (SizeTooBig(parkings, index, ship))
             {
@@ -182,7 +182,7 @@ namespace ClassLibrary
                 Console.ReadKey();
             }
         }
-        public void Leave(Task<List<Parking>> parkings, int index)
+        private void Leave(Task<List<Parking>> parkings, int index)
         {
             using var context = new SpaceContext();
             Console.WriteLine("Leaving...");

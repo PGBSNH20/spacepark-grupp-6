@@ -14,6 +14,7 @@ namespace SpacePark
             IParking parking = new Parking();
             IPayment payment = new Payment();
             IStarship starship = new Starship();
+
             Console.Clear();
             var running = true;
             while (running)

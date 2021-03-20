@@ -18,7 +18,7 @@ namespace ClassLibrary
             Console.Clear();
             using var context = new SpaceContext();
             Console.WriteLine("Using swish to pay...");
-            var pay = new Payment()
+            IPayment pay = new Payment()
             {
                 Amount = parkings.Result[index].Fee,
                 User = name,

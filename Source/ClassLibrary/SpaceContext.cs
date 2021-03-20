@@ -9,8 +9,6 @@ namespace ClassLibrary
 {
     public class SpaceContext : DbContext
     {
-        public SpaceContext()
-        { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //optionsBuilder.UseSqlServer("server=.;database=SpacePark;trusted_connection=true;");
