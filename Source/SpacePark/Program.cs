@@ -49,6 +49,7 @@ namespace SpacePark
                             }
                             Console.Clear();
                             var ship = starship.SelectShip();
+                            if(ship == null) break;
                             parking.Park(ship);
                             break;
                         }
