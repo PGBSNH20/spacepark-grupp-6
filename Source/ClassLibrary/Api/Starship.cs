@@ -18,35 +18,23 @@ namespace ClassLibrary
             return response.Results;
         }
 
-
         public IShipResult SelectShip()
         {
             IPerson person = new Person();
+            IStarship ship = new Starship();
             string name = StandardMessages.NameReader();
             var apiResult = person.GetPerson();
-            var ship = GetStarships();
-            var array = ArrayBuilder.ShipArray(ship);
+            var shipResult = ship.GetStarships();
+            var array = ArrayBuilder.ShipArray(shipResult);
 
             if (apiResult.Result.Any(p => p.Name == name))
             {
                 Console.Clear();
                 var selectedOption = Menu.ShowMenu($"Welcome {name}. What ship will you be parking today?\n", array);
-                return ship.Result.Where((_, i) => selectedOption == i).FirstOrDefault();
+                return shipResult.Result.Where((_, i) => selectedOption == i).FirstOrDefault();
             }
             StandardMessages.NotAllowedMessage();
             return null;
         }
-    }
-
-    public class ShipResult : IShipResult
-    {
-        public string Name { get; set; }
-        public decimal Length { get; set; }
-    }
-
-    public interface IShipResult
-    {
-        public string Name { get; set; }
-        public decimal Length { get; set; }
     }
 }
