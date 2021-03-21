@@ -15,18 +15,10 @@ namespace SpacePark
             IPayment payment = new Payment();
             IStarship starship = new Starship();
 
-            Console.Clear();
             var running = true;
             while (running)
             {
-                Console.Clear();
-                Console.WriteLine(@" ____  ____   _    ____ _____   ____   _    ____  _  __
-/ ___||  _ \ / \  / ___| ____| |  _ \ / \  |  _ \| |/ /
-\___ \| |_) / _ \| |   |  _|   | |_) / _ \ | |_) | ' / 
- ___) |  __/ ___ | |___| |___  |  __/ ___ \|  _ <| . \ 
-|____/|_| /_/   \_\____|_____| |_| /_/   \_|_| \_|_|\_\");
-
-                Console.WriteLine("");
+                StandardMessages.StartMessage();
                 var selectedOption = Menu.ShowMenu("SpacePark Menu", new[]
                 {
                     "Park Ship",
@@ -37,22 +29,11 @@ namespace SpacePark
                 switch (selectedOption)
                 {
                     case 0:
-                        {
-                            using var context = new SpaceContext();
-                            Console.WriteLine("Loading...");
-                            if (context.Parkings.All(i => i.Occupied))
-                            {
-                                Console.Clear();
-                                Console.WriteLine("Parking is full. Go away. Press ENTER.");
-                                Console.ReadKey();
-                                break;
-                            }
-                            Console.Clear();
-                            var ship = starship.SelectShip();
-                            if(ship == null) break;
-                            parking.Park(ship);
-                            break;
-                        }
+                        if (Occupation.AllParksOccupied()) break;
+                        var ship = starship.SelectShip();
+                        if (ship == null) break;
+                        parking.Park(ship);
+                        break;
                     case 1:
                         parking.LeavePark();
                         break;
@@ -65,8 +46,5 @@ namespace SpacePark
                 }
             }
         }
-
-
-
     }
 }

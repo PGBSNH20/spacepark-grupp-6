@@ -14,59 +14,35 @@ namespace ClassLibrary
         public bool Occupied { get; set; }
         public string User { get; set; }
 
-        public void Park(ShipResult ship)
+        public void Park(IShipResult ship)
         {
-            Console.Clear();
-            Console.WriteLine("Loading...");
+            StandardMessages.LoadingMessage();
             var parkings = ParkingLots();
+            var array = ArrayBuilder.ParkArray(parkings);
             Console.Clear();
-            var selectedOption = Menu.ShowMenu($"You have selected to park {ship.Name}. Choose parking spot", new[]
+            var selectedOption = Menu.ShowMenu($"You have selected to park {ship.Name}. Choose parking spot", array);
+
+            for (int i = 0; i < parkings.Result.Count; i++)
             {
-                $"Parking Spot {parkings.Result[0].Id}. Max ship length: {parkings.Result[0].MaxLength}m. Fee: {parkings.Result[0].Fee} credits. Occupied? {parkings.Result[0].Occupied}",
-                $"Parking Spot {parkings.Result[1].Id}. Max ship length: {parkings.Result[1].MaxLength}m. Fee: {parkings.Result[1].Fee} credits. Occupied? {parkings.Result[1].Occupied}",
-                $"Parking Spot {parkings.Result[2].Id}. Max ship length: {parkings.Result[2].MaxLength}m. Fee: {parkings.Result[2].Fee} credits. Occupied? {parkings.Result[2].Occupied}",
-                $"Parking Spot {parkings.Result[3].Id}. Max ship length: {parkings.Result[3].MaxLength}m. Fee: {parkings.Result[3].Fee} credits. Occupied? {parkings.Result[3].Occupied}",
-                $"Parking Spot {parkings.Result[4].Id}. Max ship length: {parkings.Result[4].MaxLength}m. Fee: {parkings.Result[4].Fee} credits. Occupied? {parkings.Result[4].Occupied}"
-            });
-            switch (selectedOption)
-            {
-                case 0:
-                    Finish(parkings, 0, ship);
-                    break;
-                case 1:
-                    Finish(parkings, 1, ship);
-                    break;
-                case 2:
-                    Finish(parkings, 2, ship);
-                    break;
-                case 3:
-                    Finish(parkings, 3, ship);
-                    break;
-                case 4:
-                    Finish(parkings, 4, ship);
-                    break;
+                if (selectedOption == i)
+                    Finish(parkings, i, ship);
             }
         }
 
-        private bool SizeTooBig(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private bool SizeTooBig(Task<List<IParking>> parkings, int index, IShipResult ship)
         {
             return ship.Length > parkings.Result[index].MaxLength;
         }
 
-        public async Task<List<Parking>> ParkingLots()
+        public async Task<List<IParking>> ParkingLots()
         {
             await using var context = new SpaceContext();
             var parkings = context.Parkings.OrderBy(i => i.Id).ToList();
-            return parkings;
-        }
-        private bool ParkIsOccupied(Task<List<Parking>> parkings, int index)
-        {
-            using var context = new SpaceContext();
-            var park = context.Parkings.First(p => p.Id == parkings.Result[index].Id);
-            return park.Occupied;
+            var list = parkings.ToList<IParking>();
+            return list;
         }
 
-        private void Park(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private void Park(Task<List<IParking>> parkings, int index, IShipResult ship)
         {
             Console.Clear();
             using var context = new SpaceContext();
@@ -79,7 +55,7 @@ namespace ClassLibrary
             Console.ReadKey();
         }
 
-        private void Finish(Task<List<Parking>> parkings, int index, ShipResult ship)
+        private void Finish(Task<List<IParking>> parkings, int index, IShipResult ship)
         {
             if (SizeTooBig(parkings, index, ship))
             {
@@ -88,7 +64,7 @@ namespace ClassLibrary
             }
             else
             {
-                if (ParkIsOccupied(parkings, index))
+                if (Occupation.ParkIsOccupied(parkings, index))
                 {
                     Console.WriteLine("Occupied");
                     Console.ReadKey();
@@ -104,85 +80,37 @@ namespace ClassLibrary
         {
             IPerson person = new Person();
             IPayment payment = new Payment();
-            Console.Clear();
-            Console.WriteLine("For security reasons, provide your name before selecting your ship.");
-            string name = Console.ReadLine();
+            string name = StandardMessages.NameReader();
             var r = person.GetPerson();
-            Console.WriteLine("Loading...");
+            StandardMessages.LoadingMessage();
             if (r.Result.Any(p => p.Name == name))
             {
                 var parkings = ParkingLots();
+                var array = ArrayBuilder.OnLeaveArray(parkings);
                 Console.Clear();
-                var selectedOption = Menu.ShowMenu($"Welcome {name}. What ship will you be leaving with today?\n", new[]
-                {
-                    $"Parking Spot {parkings.Result[0].Id}. Is occupied: {parkings.Result[0].Occupied}. Occupied by {parkings.Result[0].User}",
-                    $"Parking Spot {parkings.Result[1].Id}. Is occupied: {parkings.Result[1].Occupied}. Occupied by {parkings.Result[1].User}",
-                    $"Parking Spot {parkings.Result[2].Id}. Is occupied: {parkings.Result[2].Occupied}. Occupied by {parkings.Result[2].User}",
-                    $"Parking Spot {parkings.Result[3].Id}. Is occupied: {parkings.Result[3].Occupied}. Occupied by {parkings.Result[3].User}",
-                    $"Parking Spot {parkings.Result[4].Id}. Is occupied: {parkings.Result[4].Occupied}. Occupied by {parkings.Result[4].User}",
-                });
+                var selectedOption = Menu.ShowMenu($"Welcome {name}. What ship will you be leaving with today?\n", array);
 
-                switch (selectedOption)
+                for (int i = 0; i < parkings.Result.Count; i++)
                 {
-                    case 0:
-                        if (ParkIsOccupied(parkings, 0) == false)
+                    if (selectedOption == i)
+                    {
+                        if (Occupation.ParkIsOccupied(parkings, i) == false)
                         {
-                            Console.WriteLine("You cannot leave with nothing?");
-                            Console.ReadKey();
+                            StandardMessages.EmptyParkingLotMessage();
                             break;
                         }
-                        payment.Pay(parkings, 0, name);
-                        Leave(parkings, 0);
+                        payment.Pay(parkings, i, name);
+                        Leave(parkings, i);
                         break;
-                    case 1:
-                        if (ParkIsOccupied(parkings, 1) == false)
-                        {
-                            Console.WriteLine("You cannot leave with nothing?");
-                            Console.ReadKey();
-                            break;
-                        }
-                        payment.Pay(parkings, 1, name);
-                        Leave(parkings, 1);
-                        break;
-                    case 2:
-                        if (ParkIsOccupied(parkings, 2) == false)
-                        {
-                            Console.WriteLine("You cannot leave with nothing?");
-                            Console.ReadKey();
-                            break;
-                        }
-                        payment.Pay(parkings, 2, name);
-                        Leave(parkings, 2);
-                        break;
-                    case 3:
-                        if (ParkIsOccupied(parkings, 3) == false)
-                        {
-                            Console.WriteLine("You cannot leave with nothing?");
-                            Console.ReadKey();
-                            break;
-                        }
-                        payment.Pay(parkings, 3, name);
-                        Leave(parkings, 3);
-                        break;
-                    case 4:
-                        if (ParkIsOccupied(parkings, 4) == false)
-                        {
-                            Console.WriteLine("You cannot leave with nothing?");
-                            Console.ReadKey();
-                            break;
-                        }
-                        payment.Pay(parkings, 4, name);
-                        Leave(parkings, 4);
-                        break;
+                    }
                 }
             }
             else
             {
-                Console.WriteLine("Not Allowed");
-                Console.ReadKey();
+                StandardMessages.NotAllowedMessage();
             }
         }
-        private void Leave(Task<List<Parking>> parkings, int index)
+        private void Leave(Task<List<IParking>> parkings, int index)
         {
             using var context = new SpaceContext();
             Console.WriteLine("Leaving...");

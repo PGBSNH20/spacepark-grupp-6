@@ -13,17 +13,15 @@ namespace ClassLibrary
         public string User { get; set; }
         public DateTime PayDate { get; set; }
 
-        public void Pay(Task<List<Parking>> parkings, int index, string name)
+        public void Pay(Task<List<IParking>> parkings, int index, string name)
         {
             Console.Clear();
             using var context = new SpaceContext();
             Console.WriteLine("Using swish to pay...");
-            IPayment pay = new Payment()
-            {
-                Amount = parkings.Result[index].Fee,
-                User = name,
-                PayDate = DateTime.Now
-            };
+            IPayment pay = new Payment();
+            pay.Amount = parkings.Result[index].Fee;
+            pay.User = name;
+            pay.PayDate = DateTime.Now;
             context.Add(pay);
             context.SaveChanges();
             Console.WriteLine("Payment successful");
@@ -33,9 +31,7 @@ namespace ClassLibrary
         public void Receipts()
         {
             using var context = new SpaceContext();
-            Console.Clear();
-            Console.WriteLine("Enter name: ");
-            var name = Console.ReadLine();
+            string name = StandardMessages.NameReader();
             var payments = context.Payments.Where(p => p.User == name).ToList();
             if (!payments.Any())
             {

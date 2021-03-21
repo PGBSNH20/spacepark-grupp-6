@@ -6,6 +6,6 @@ namespace ClassLibrary
     public interface IStarship
     {
         public Task<List<ShipResult>> GetStarships();
-        public ShipResult SelectShip();
+        public IShipResult SelectShip();
     }
 }
