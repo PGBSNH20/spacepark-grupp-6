@@ -21,10 +21,9 @@ namespace ClassLibrary
         public IShipResult SelectShip()
         {
             IPerson person = new Person();
-            IStarship ship = new Starship();
             string name = StandardMessages.NameReader();
             var apiResult = person.GetPerson();
-            var shipResult = ship.GetStarships();
+            var shipResult = GetStarships();
             var array = ArrayBuilder.ShipArray(shipResult);
 
             if (apiResult.Result.Any(p => p.Name == name))
