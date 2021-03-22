@@ -34,7 +34,9 @@ namespace ClassLibrary
             var tempList = new List<string>();
             for (int i = 0; i < parkings.Result.Count; i++)
             {
-                tempList.Add($"Parking Spot {parkings.Result[i].Id}. Is occupied: {parkings.Result[i].Occupied}. Occupied by {parkings.Result[i].User}");
+                tempList.Add(parkings.Result[i].Occupied == false
+                    ? $"Parking Spot {parkings.Result[i].Id}."
+                    : $"Parking Spot {parkings.Result[i].Id}. Occupied by {parkings.Result[i].User}");
             }
             string[] parks = tempList.ToArray();
             return parks;
