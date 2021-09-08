@@ -11,4 +11,4 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Bygg koden
-      run: dotnet build SpacePark.sln
+      run: dotnet build SpacePark.csproj
