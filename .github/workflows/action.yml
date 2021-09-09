@@ -1,21 +1,21 @@
 name: Kevin och Mikael
-on: push
+on: push # Ställer in att man aktiverar actions med att göra en push i github
 jobs: 
   build: 
-    name: Spacepark build
+    name: Spacepark build # Namnet på vår build
     
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Vilken maskinversion som körs
     
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v1 # Ställer in dotnet miljön 
       with: 
-        dotnet-version: 5.0.x
+        dotnet-version: 5.0.x # Ställer in vilken version av dotnet 
       
-    - name: Restore
-      run: dotnet restore Source/SpacePark.sln
+    - name: Restore 
+      run: dotnet restore Source/SpacePark.sln 
     - name: Build
-      run: dotnet build --no-restore --verbosity normal Source/SpacePark.sln
+      run: dotnet build --no-restore --verbosity normal Source/SpacePark.sln # Ställer in så att programmet startar
     - name: Tests
-      run: dotnet test --no-build --verbosity normal Source/SpacePark.sln 
+      run: dotnet test --no-build --verbosity normal Source/SpacePark.sln # Ställer in så testerna i projeket körs
  
