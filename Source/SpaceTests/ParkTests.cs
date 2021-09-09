@@ -15,7 +15,7 @@ namespace SpaceTests
             // Act
             var parkingLots = parking.ParkingLots();
             // Assert
-            Assert.Equal(5, parkingLots.Result.Count);
+            Assert.Equal(4, parkingLots.Result.Count);
         }
     }
 }
