@@ -13,9 +13,9 @@ namespace SpaceTests
             // Arrange
             IParking parking = new Parking();
             // Act
-            var parkingLots = parking.ParkingLots();
+            vars parkingLots = parking.ParkingLots();
             // Assert
-            Assert.Equal(4, parkingLots.Result.Count);
+            Assert.Equal(5, parkingLots.Result.Count);
         }
     }
 }
