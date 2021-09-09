@@ -11,9 +11,11 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with: 
         dotnet-version: 5.0.x
-    - name: Spacepark 
-      run: dotnet build Source/SpacePark/SpacePark.csproj
-  
-    - name: Spacepark tests
-      run: dotnet build Source/SpaceTests/SpaceTests.csproj
       
+    - name: Restore
+      run: dotnet restore Source/SpacePark.sln
+    - name: Build
+      run: dotnet build --no-build --verbosoity nomral Source/SpacePark.sln
+    - name: Testing
+      run: dotnet test --no-build --verbosity nomral Source/SpacePark.sln 
+ 
