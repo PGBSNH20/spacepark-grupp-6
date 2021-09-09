@@ -15,7 +15,7 @@ jobs:
     - name: Restore
       run: dotnet restore Source/SpacePark.sln
     - name: Build
-      run: dotnet build --no-restore --verbosoity normal Source/SpacePark.sln
+      run: dotnet build --no-restore --verbosity normal Source/SpacePark.sln
     - name: Testing
       run: dotnet test --no-build --verbosity normal Source/SpacePark.sln 
  
