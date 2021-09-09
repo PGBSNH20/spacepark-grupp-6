@@ -12,7 +12,7 @@ jobs:
       with: 
         dotnet-version: 5.0.x
     - name: Spacepark 
-      run: dotnet build SpacePark/SpacePark.csproj
+      run: dotnet build Source/SpacePark/SpacePark.csproj
         
     
   
